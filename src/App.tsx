@@ -1,59 +1,70 @@
 import {useState} from 'react'
 import './App.css'
 import TarjetaTarea from "./componentes/tarjetaTarea.tsx";
+import FormularioTarea from "./componentes/FormularioTarea.tsx";
+import type {Tarea} from "./interfaces/Tarea.ts";
 
 function App() {
-    const [id, setId] = useState(0)
-    const [tarea, setTarea] = useState([])
-    const [texto, setTexto] = useState("");
+    const [tareas, setTareas] = useState<Tarea[]>([]);
+    const [siguienteId, setSiguienteId] = useState(1)
+    const [busqueda, setBusqueda] = useState("")
+    const [modalAbierta, setModalAbierta] = useState(false)
 
-    function addTarea(e) {
-        e.preventDefault();
+    //añade la tarea en setareas, incremento el id para la siguiente tarea y cierro el modal cuando ya esta terminaste el formulario
+    function addTarea(titulo: string, descripcion: string, responsable: string) {
+        const nueva: Tarea = {
+            id: siguienteId,
+            titulo: titulo,
+            descripcion: descripcion,
+            responsable: responsable,
+        };
 
-        if (!texto.trim()) return
-        let tareaList = [...tarea];
-        tareaList.push({id, texto});
-        setTarea(tareaList)
-        setId(id + 1)
-        setTexto("")
-
+        setTareas([...tareas, nueva]);
+        setSiguienteId(siguienteId + 1);
+        setModalAbierta(false);
     }
 
-    function eliminarTarea(taskid) {
-        let tareaList = [...tarea];
-
-        tareaList = tareaList.filter((tarea) =>
-            tarea.id !== taskid
-        )
-        setTarea(tareaList)
+    function eliminarTarea(id: number) {
+        setTareas(tareas.filter((t) => t.id !== id));
     }
+
+    const tareasVisibles = tareas.filter((t) =>
+        t.titulo.toLowerCase().includes(busqueda.toLowerCase())
+    );
 
     return (
+        //el render con todo lo de la interfaz
         <>
-            <label>
-                Nombre de la tarea
-                <textarea
-                    id="tareaTexto"
-                    name="postContent"
-                    value={texto}
-                    onChange={(e) => setTexto(e.target.value)}
-                />
-            </label>
-            <button type="button" onClick={addTarea}>Añadir</button>
-            {tarea.length == 0 ?
-                <><p>No hay tareas pendientes</p>
-                </> : <div id={"tarjetaLista"}>
-                    {tarea.map((tarea) => (
-                        <TarjetaTarea
-                            key={tarea.id}
-                            tarea={tarea.texto}
-                            id={tarea.id}
-                            deleteTarea={eliminarTarea}
-                        />
-                    ))}
+            <header className="cabecera">
+                <h1>Gestor de tareas</h1>
+                <button type="button" onClick={() => setModalAbierta(true)}>Nueva tarea</button>
+            </header>
 
-                </div>}
+            <input type="text" className="buscador" placeholder="Buscar por titulo" value={busqueda}
+                   onChange={(e) => setBusqueda(e.target.value)}/>
 
+            <p className="contador">Mostrando {tareasVisibles.length} de {tareas.length} tareas</p>
+            {tareas.length === 0 && <p>No hay tareas pendientes</p>}
+            {tareas.length > 0 && tareasVisibles.length === 0 && (
+                <p>No se encontraron tareas con ese título</p>
+            )}
+
+            <div className="grid-tareas">
+                {tareasVisibles.map((t) => (
+                    <TarjetaTarea key={t.id} tarea={t} onEliminar={eliminarTarea}/>))}
+            </div>
+
+            {/*basicamente mira es true que si le estas clickando al fondo, si le clickas al fondo se cierra, si no es true esta abierta pq no le clickaste nada*/}
+            {modalAbierta && (
+                <div className="modal-fondo" onClick={(e) => {
+                        if (e.target === e.currentTarget) {setModalAbierta(false);}
+                    }}
+                >
+                    <div className="modal">
+                        <FormularioTarea onGuardar={addTarea} onCancelar={() => setModalAbierta(false)}/>
+                    </div>
+                </div>
+            )}
 
         </>
     )

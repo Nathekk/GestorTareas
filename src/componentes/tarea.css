@@ -1,0 +1,13 @@
+.tarjeta {
+    border: 1px solid #0072ff;
+    border-radius: 8px;
+    padding: 16px;
+    background: #eaf7ff;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tarjeta h3 {
+    margin: 0;
+}

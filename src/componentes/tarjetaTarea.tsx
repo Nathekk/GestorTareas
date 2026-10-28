@@ -1,12 +1,22 @@
-import './Tarea.css'
+import './tarea.css'
+import type {Tarea} from "../interfaces/Tarea.ts";
 
-function TarjetaTarea({tarea, deleteTarea,id}) {
-    return (
-            <div>
-                <p>{tarea}</p>
-                <button type="button" onClick={() =>deleteTarea(id)}>Eliminar</button>
-            </div>
-    )
+interface Props {
+    tarea: Tarea;
+    onEliminar: (id: number) => void;
 }
 
-export default TarjetaTarea
+function TarjetaTarea({tarea, onEliminar}: Props) {
+    return (
+        <div className="tarjeta">
+            <h3>{tarea.titulo}</h3>
+            {tarea.descripcion && <p>{tarea.descripcion}</p>}
+            <p>{tarea.responsable}</p>
+            <button type="button" onClick={() => onEliminar(tarea.id)}>
+                Eliminar
+            </button>
+        </div>
+    );
+}
+
+export default TarjetaTarea;
