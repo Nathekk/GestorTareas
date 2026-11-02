@@ -9,6 +9,7 @@ function App() {
     const [busqueda, setBusqueda] = useState("")
     const [modalAbierta, setModalAbierta] = useState(false)
     const [error, setError] = useState("");
+    const [cargando, setCargando] = useState(true);
 
     //FETCH de los datos de la api
     useEffect(() => {
@@ -25,8 +26,12 @@ function App() {
                 setTareas(tareas);
             } catch (error) {
                 console.error("Error al cargar las tareas", error);
+                setError("No se pudieron cargar las tareas");
+            } finally {
+                setCargando(false)
             }
         }
+
         cargarTareas().catch(console.error);
     }, []);
 
@@ -38,7 +43,7 @@ function App() {
             descripcion: descripcion,
             responsable: responsable,
         };
-
+        setError("");
         try {
             const api = "http://localhost:3000/tareas";
             const response = await fetch(api, {
@@ -65,7 +70,8 @@ function App() {
     }
 
 
-    async function eliminarTarea(id: number) {
+    async function eliminarTarea(id: string) {
+        setError("");
         try {
             const api = `http://localhost:3000/tareas/${id}`;
             const response = await fetch(api, {
@@ -82,11 +88,14 @@ function App() {
             setError("No se pudo eliminar la tarea");
         }
     }
-
+//TAREAS VISIBLES
     const tareasVisibles = tareas.filter((t) =>
         t.titulo.toLowerCase().includes(busqueda.toLowerCase())
     );
 
+    useEffect(() => {
+        document.title = `Mostrando ${tareasVisibles.length} de ${tareas.length} tareas`;
+    }, [tareas, tareasVisibles.length]);
     return (
         //el render con todo lo de la interfaz
         <>
@@ -98,9 +107,16 @@ function App() {
             <input type="text" className="buscador" placeholder="Buscar por titulo" value={busqueda}
                    onChange={(e) => setBusqueda(e.target.value)}/>
 
-            <p className="contador">Mostrando {tareasVisibles.length} de {tareas.length} tareas</p>
-            {tareas.length === 0 && <p>No hay tareas pendientes</p>}
-            {tareas.length > 0 && tareasVisibles.length === 0 && (
+            {cargando && <p>Cargando tareas...</p>}
+            <p>
+                Mostrando {tareasVisibles.length} de {tareas.length} tareas
+            </p>
+
+            {!cargando && tareas.length === 0 && (
+                <p>No hay tareas pendientes</p>
+            )}
+
+            {!cargando && tareas.length > 0 && tareasVisibles.length === 0 && (
                 <p>No se encontraron tareas con ese título</p>
             )}
             {error && <p>{error}</p>}

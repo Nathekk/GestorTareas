@@ -1,16 +1,10 @@
 {
   "tareas": [
     {
-      "titulo": "sdfsd",
-      "descripcion": "fsdfsdf",
-      "responsable": "sdfd",
-      "id": "86vHk_OJJTA"
-    },
-    {
-      "titulo": "fsdf",
-      "descripcion": "sdfsdf",
-      "responsable": "sdfsdf",
-      "id": "j3ahVXQMpwg"
+      "titulo": "eee",
+      "descripcion": "eee",
+      "responsable": "eee",
+      "id": "7jxZeLLSAOY"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

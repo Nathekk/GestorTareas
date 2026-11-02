@@ -3,7 +3,7 @@ import type {Tarea} from "../interfaces/Tarea.ts";
 
 interface Props {
     tarea: Tarea;
-    onEliminar: (id: number) => void;
+    onEliminar: (id: string) => void;
 }
 
 function TarjetaTarea({tarea, onEliminar}: Props) {

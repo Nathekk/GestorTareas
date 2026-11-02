@@ -1,5 +1,5 @@
 export interface Tarea {
-    id: number;
+    id: string;
     titulo: string;
     descripcion: string;
     responsable: string;
