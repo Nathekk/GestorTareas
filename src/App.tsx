@@ -11,13 +11,25 @@ function App() {
     const [error, setError] = useState("");
 
     //FETCH de los datos de la api
-    useEffect(()=> {
-        const api = "http://localhost:3000/tareas"
-        fetch(api)
-            .then((response) => response.json())
-            .then((tareas) => setTareas(tareas))
-            .catch((error) => console.error('Error fetching tareas', error));
+    useEffect(() => {
+        async function cargarTareas() {
+            try {
+                const api = "http://localhost:3000/tareas";
+                const response = await fetch(api);
+                if (!response.ok) {
+                    throw new Error("Error al obtener las tareas");
+                }
+
+                const tareas = await response.json();
+
+                setTareas(tareas);
+            } catch (error) {
+                console.error("Error al cargar las tareas", error);
+            }
+        }
+        cargarTareas().catch(console.error);
     }, []);
+
 
 //en el anterior hice post en el formulario, no me funcionaba el delete, era aqui, en addtarea porque sino la id me daba problemas, ademas que por algo sellamaba addtarea, no tengo mucho sentido comun
     async function addTarea(titulo: string, descripcion: string, responsable: string) {
@@ -37,7 +49,9 @@ function App() {
                 body: JSON.stringify(nueva),
             });
 
-            if (!response.ok) { throw new Error("Error");}
+            if (!response.ok) {
+                throw new Error("Error");
+            }
 
             const nuevaTarea = await response.json();
 
@@ -57,7 +71,9 @@ function App() {
             const response = await fetch(api, {
                 method: 'DELETE',
             });
-            if (!response.ok) { throw new Error("Error");}
+            if (!response.ok) {
+                throw new Error("Error");
+            }
 
             setTareas(tareas.filter((t) => t.id !== id));
 
@@ -97,8 +113,10 @@ function App() {
             {/*basicamente mira es true que si le estas clickando al fondo, si le clickas al fondo se cierra, si no es true esta abierta pq no le clickaste nada*/}
             {modalAbierta && (
                 <div className="modal-fondo" onClick={(e) => {
-                        if (e.target === e.currentTarget) {setModalAbierta(false);}
-                    }}
+                    if (e.target === e.currentTarget) {
+                        setModalAbierta(false);
+                    }
+                }}
                 >
                     <div className="modal">
                         <FormularioTarea onGuardar={addTarea} onCancelar={() => setModalAbierta(false)}/>
