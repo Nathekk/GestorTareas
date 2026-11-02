@@ -6,7 +6,6 @@ import type {Tarea} from "./interfaces/Tarea.ts";
 
 function App() {
     const [tareas, setTareas] = useState<Tarea[]>([])
-    const [siguienteId, setSiguienteId] = useState(1)
     const [busqueda, setBusqueda] = useState("")
     const [modalAbierta, setModalAbierta] = useState(false)
 
@@ -23,14 +22,13 @@ function App() {
     //añade la tarea en setareas, incremento el id para la siguiente tarea y cierro el modal cuando ya esta terminaste el formulario
     function addTarea(titulo: string, descripcion: string, responsable: string) {
         const nueva: Tarea = {
-            id: siguienteId,
+            id: Date.now(),
             titulo: titulo,
             descripcion: descripcion,
             responsable: responsable,
         };
 
         setTareas([...tareas, nueva]);
-        setSiguienteId(siguienteId + 1);
         setModalAbierta(false);
     }
 
