@@ -1,34 +1,10 @@
 {
   "tareas": [
     {
-      "titulo": "prueba",
-      "descripcion": "prueba",
-      "responsable": "fsdf",
-      "id": "RGvEL7-HqdI"
-    },
-    {
-      "titulo": "fgdfg",
-      "descripcion": "dfgdfg",
-      "responsable": "df",
-      "id": "FaSBLu9Qh60"
-    },
-    {
-      "titulo": "dasd",
-      "descripcion": "asdsa",
-      "responsable": "sfa",
-      "id": "y41N3skjVwI"
-    },
-    {
-      "titulo": "fsa",
-      "descripcion": "fasdfsd",
-      "responsable": "sdfsd",
-      "id": "kt60BoDRe7c"
-    },
-    {
-      "titulo": "f",
-      "descripcion": "f",
-      "responsable": "f",
-      "id": "xnbjtvCBYkQ"
+      "titulo": "sdfsd",
+      "descripcion": "fsdfsdf",
+      "responsable": "sdfd",
+      "id": "86vHk_OJJTA"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

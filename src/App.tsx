@@ -8,6 +8,7 @@ function App() {
     const [tareas, setTareas] = useState<Tarea[]>([])
     const [busqueda, setBusqueda] = useState("")
     const [modalAbierta, setModalAbierta] = useState(false)
+    const [error, setError] = useState("");
 
     //FETCH de los datos de la api
     useEffect(()=> {
@@ -18,22 +19,52 @@ function App() {
             .catch((error) => console.error('Error fetching tareas', error));
     }, []);
 
-
-    //añade la tarea en setareas, incremento el id para la siguiente tarea y cierro el modal cuando ya esta terminaste el formulario
-    function addTarea(titulo: string, descripcion: string, responsable: string) {
-        const nueva: Tarea = {
-            id: Date.now(),
+//en el anterior hice post en el formulario, no me funcionaba el delete, era aqui, en addtarea porque sino la id me daba problemas, ademas que por algo sellamaba addtarea, no tengo mucho sentido comun
+    async function addTarea(titulo: string, descripcion: string, responsable: string) {
+        const nueva = {
             titulo: titulo,
             descripcion: descripcion,
             responsable: responsable,
         };
 
-        setTareas([...tareas, nueva]);
-        setModalAbierta(false);
+        try {
+            const api = "http://localhost:3000/tareas";
+            const response = await fetch(api, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(nueva),
+            });
+
+            if (!response.ok) { throw new Error("Error");}
+
+            const nuevaTarea = await response.json();
+
+            setTareas([...tareas, nuevaTarea]);
+            setModalAbierta(false);
+
+        } catch (error) {
+            console.error("Error creando tarea", error);
+            setError("No se pudo crear la tarea");
+        }
     }
 
-    function eliminarTarea(id: number) {
-        setTareas(tareas.filter((t) => t.id !== id));
+
+    async function eliminarTarea(id: number) {
+        try {
+            const api = `http://localhost:3000/tareas/${id}`;
+            const response = await fetch(api, {
+                method: 'DELETE',
+            });
+            if (!response.ok) { throw new Error("Error");}
+
+            setTareas(tareas.filter((t) => t.id !== id));
+
+        } catch (error) {
+            console.error("Error tarea", error);
+            setError("No se pudo eliminar la tarea");
+        }
     }
 
     const tareasVisibles = tareas.filter((t) =>
@@ -56,6 +87,7 @@ function App() {
             {tareas.length > 0 && tareasVisibles.length === 0 && (
                 <p>No se encontraron tareas con ese título</p>
             )}
+            {error && <p>{error}</p>}
 
             <div className="grid-tareas">
                 {tareasVisibles.map((t) => (

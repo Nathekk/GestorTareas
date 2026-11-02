@@ -7,7 +7,6 @@ interface Props {
 
 //EL FORMUALRIO MODAL
 function FormularioTarea({onGuardar, onCancelar}: Props) {
-    //vi que era mejor hacerlo de esta forma viendo ejemplos de youtube y documentacion
     const [nuevaTarea, setNuevaTarea] = useState({titulo: '', descripcion: '', responsable: ''})
     const [error, setError] = useState("");
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,25 +18,8 @@ function FormularioTarea({onGuardar, onCancelar}: Props) {
         }
         setError("");
 
-        const api = "http://localhost:3000/tareas"
-        fetch(api, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                titulo: nuevaTarea.titulo.trim(),
-                descripcion: nuevaTarea.descripcion.trim(),
-                responsable: nuevaTarea.responsable.trim(),
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Nueva tarea creao', data);
-                onGuardar(nuevaTarea.titulo.trim(), nuevaTarea.descripcion.trim(), nuevaTarea.responsable.trim());
-                setNuevaTarea({titulo: "", descripcion: "", responsable: ""});
-            })
-            .catch((error) => console.error('Error creando tarea', error));
+        onGuardar(nuevaTarea.titulo.trim(), nuevaTarea.descripcion.trim(), nuevaTarea.responsable.trim());
+        setNuevaTarea({titulo: "", descripcion: "", responsable: ""});
     }
 
     return (
