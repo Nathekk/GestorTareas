@@ -1,9 +1,55 @@
 import {useEffect, useState} from 'react'
-import './App.css'
 import TarjetaTarea from "./componentes/tarjetaTarea.tsx";
 import FormularioTarea from "./componentes/FormularioTarea.tsx";
 import type {Tarea} from "./interfaces/Tarea.ts";
+import styled from "@emotion/styled";
+//EMOTIONNN
+const Cabecera = styled.header`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+`;
 
+const Buscador = styled.input`
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+`;
+
+const Contador = styled.p`
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 16px;
+`;
+
+const GridTareas = styled.div`
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 16px;
+`;
+
+const ModalFondo = styled.div`
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Modal = styled.div`
+    background: #eaf7ff;
+    padding: 24px;
+    border-radius: 8px;
+    min-width: 320px;
+`;
+
+const MensajeError = styled.p`
+    color: red;
+    font-size: 14px;
+`;
 function App() {
     const [tareas, setTareas] = useState<Tarea[]>([])
     const [busqueda, setBusqueda] = useState("")
@@ -99,18 +145,19 @@ function App() {
     return (
         //el render con todo lo de la interfaz
         <>
-            <header className="cabecera">
+            <Cabecera>
                 <h1>Gestor de tareas</h1>
                 <button type="button" onClick={() => setModalAbierta(true)}>Nueva tarea</button>
-            </header>
+            </Cabecera>
 
-            <input type="text" className="buscador" placeholder="Buscar por titulo" value={busqueda}
+            <Buscador type="text" placeholder="Buscar por titulo" value={busqueda}
                    onChange={(e) => setBusqueda(e.target.value)}/>
 
             {cargando && <p>Cargando tareas...</p>}
-            <p>
+
+            <Contador>
                 Mostrando {tareasVisibles.length} de {tareas.length} tareas
-            </p>
+            </Contador>
 
             {!cargando && tareas.length === 0 && (
                 <p>No hay tareas pendientes</p>
@@ -119,25 +166,25 @@ function App() {
             {!cargando && tareas.length > 0 && tareasVisibles.length === 0 && (
                 <p>No se encontraron tareas con ese título</p>
             )}
-            {error && <p>{error}</p>}
+            {error && <MensajeError>{error}</MensajeError>}
 
-            <div className="grid-tareas">
+            <GridTareas>
                 {tareasVisibles.map((t) => (
                     <TarjetaTarea key={t.id} tarea={t} onEliminar={eliminarTarea}/>))}
-            </div>
+            </GridTareas>
 
             {/*basicamente mira es true que si le estas clickando al fondo, si le clickas al fondo se cierra, si no es true esta abierta pq no le clickaste nada*/}
             {modalAbierta && (
-                <div className="modal-fondo" onClick={(e) => {
+                <ModalFondo onClick={(e) => {
                     if (e.target === e.currentTarget) {
                         setModalAbierta(false);
                     }
                 }}
                 >
-                    <div className="modal">
+                    <Modal>
                         <FormularioTarea onGuardar={addTarea} onCancelar={() => setModalAbierta(false)}/>
-                    </div>
-                </div>
+                    </Modal>
+                </ModalFondo>
             )}
 
         </>

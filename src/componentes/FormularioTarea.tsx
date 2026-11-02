@@ -1,4 +1,34 @@
 import {useState} from "react";
+import styled from "@emotion/styled";
+
+//ESTILOOS
+const Formulario = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-weight: 600;
+    }
+
+    input, textarea {
+        padding: 6px;
+    }
+`;
+
+const BotonesFormulario = styled.div`
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+`;
+
+const MensajeError = styled.p`
+    color: red;
+    font-size: 14px;
+`;
 
 interface Props {
     onGuardar: (titulo: string, descripcion: string, responsable: string) => Promise<void>;
@@ -9,7 +39,8 @@ interface Props {
 function FormularioTarea({onGuardar, onCancelar}: Props) {
     const [nuevaTarea, setNuevaTarea] = useState({titulo: '', descripcion: '', responsable: ''})
     const [error, setError] = useState("");
-    const handleSubmit =  async (e: React.FormEvent<HTMLFormElement>) => {
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (nuevaTarea.titulo.trim() === "" || nuevaTarea.responsable.trim() === "") {
@@ -17,18 +48,12 @@ function FormularioTarea({onGuardar, onCancelar}: Props) {
             return;
         }
         setError("");
-            onGuardar(nuevaTarea.titulo.trim(), nuevaTarea.descripcion.trim(), nuevaTarea.responsable.trim());
-            setNuevaTarea({titulo: "", descripcion: "", responsable: ""});
-
-        {
-            console.error("Error creando tarea", error);
-            setError("No se pudo crear la tarea");
-            throw error;
-        }
+        await onGuardar(nuevaTarea.titulo.trim(), nuevaTarea.descripcion.trim(), nuevaTarea.responsable.trim());
+        setNuevaTarea({titulo: "", descripcion: "", responsable: ""});
     }
 
     return (
-        <form className="formulario-tarea" onSubmit={handleSubmit}>
+        <Formulario onSubmit={handleSubmit}>
             {/*la interfaz modal del formulario*/}
             <h2>Nueva tarea</h2>
 
@@ -51,15 +76,15 @@ function FormularioTarea({onGuardar, onCancelar}: Props) {
                        onChange={(e) => setNuevaTarea({...nuevaTarea, responsable: e.target.value})}/>
             </label>
 
-            {error && <p className="error">{error}</p>}
+            {error && <MensajeError>{error}</MensajeError>}
 
-            <div className="botones-formulario">
+            <BotonesFormulario>
                 <button type="submit">Guardar</button>
                 <button type="button" onClick={onCancelar}>
                     Cancelar
                 </button>
-            </div>
-        </form>
+            </BotonesFormulario>
+        </Formulario>
     );
 }
 
