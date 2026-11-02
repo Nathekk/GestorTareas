@@ -1,14 +1,24 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import './App.css'
 import TarjetaTarea from "./componentes/tarjetaTarea.tsx";
 import FormularioTarea from "./componentes/FormularioTarea.tsx";
 import type {Tarea} from "./interfaces/Tarea.ts";
 
 function App() {
-    const [tareas, setTareas] = useState<Tarea[]>([]);
+    const [tareas, setTareas] = useState<Tarea[]>([])
     const [siguienteId, setSiguienteId] = useState(1)
     const [busqueda, setBusqueda] = useState("")
     const [modalAbierta, setModalAbierta] = useState(false)
+
+    //FETCH de los datos de la api
+    useEffect(()=> {
+        const api = "http://localhost:3000/tareas"
+        fetch(api)
+            .then((response) => response.json())
+            .then((tareas) => setTareas(tareas))
+            .catch((error) => console.error('Error fetching tareas', error));
+    }, []);
+
 
     //añade la tarea en setareas, incremento el id para la siguiente tarea y cierro el modal cuando ya esta terminaste el formulario
     function addTarea(titulo: string, descripcion: string, responsable: string) {
