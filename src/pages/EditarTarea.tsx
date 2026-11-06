@@ -1,14 +1,23 @@
 import {useParams, useNavigate} from 'react-router';
 import FormularioTarea from "../componentes/FormularioTarea.tsx";
 import {useEffect, useState} from "react";
+import type {Tarea} from "../interfaces/Tarea.ts";
+import styled from "@emotion/styled";
 
-function EditarTarea({}) {
+
+const MensajeError = styled.p`
+    color: red;
+    font-size: 14px;
+`;
+
+function EditarTarea() {
     const {id} = useParams();
     const navigate = useNavigate();
+    const [tarea, setTarea] = useState<Tarea>({id: "", titulo: "", descripcion: "", responsable: ""});
+    const [error, setError] = useState("");
 
-    const [tarea, setTarea] = useState(null);
 
-//GET PARA TOMAR EL ID Y COSAS DE LA TAREA
+    //GET PARA TOMAR EL ID Y COSAS DE LA TAREA
     useEffect(() => {
         async function cargarTarea() {
             try {
@@ -18,12 +27,13 @@ function EditarTarea({}) {
                     const data = await response.json();
                     setTarea(data);
                 } else {
-                    console.error("No se pudo encontrar la tarea");
+                    setError("No existe la tarea");
                 }
             } catch (error) {
                 console.error("Error al cargar la tarea", error);
             }
         }
+
         if (id) {
             cargarTarea();
         }
@@ -54,8 +64,12 @@ function EditarTarea({}) {
         <div>
             <h2>Editar Tarea</h2>
             <p>Editando la tarea con ID: <strong>{id}</strong></p>
+            {error && <MensajeError>{error}</MensajeError>}
 
-            <FormularioTarea onGuardar={handleGuardar} onCancelar={() => navigate('/tareas')}/>
+            {tarea && (
+                <FormularioTarea key={tarea.id} tareaObtenida={tarea} onGuardar={handleGuardar}
+                                 onCancelar={() => navigate('/tareas')}/>
+            )}
         </div>
     );
 }

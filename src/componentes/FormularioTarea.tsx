@@ -1,5 +1,6 @@
 import {useState} from "react";
 import styled from "@emotion/styled";
+import type {Tarea} from "../interfaces/Tarea.ts";
 
 //ESTILOOS
 const Formulario = styled.form`
@@ -31,13 +32,18 @@ const MensajeError = styled.p`
 `;
 
 interface Props {
+    tareaObtenida?: Tarea | null;
     onGuardar: (titulo: string, descripcion: string, responsable: string) => Promise<void>;
     onCancelar: () => void;
 }
 
 //EL FORMUALRIO MODAL
-function FormularioTarea({onGuardar, onCancelar}: Props) {
-    const [nuevaTarea, setNuevaTarea] = useState({titulo: '', descripcion: '', responsable: ''})
+function FormularioTarea({tareaObtenida, onGuardar, onCancelar}: Props) {
+    const [nuevaTarea, setNuevaTarea] = useState({
+        titulo: tareaObtenida?.titulo ?? "",
+        descripcion: tareaObtenida?.descripcion ?? "",
+        responsable: tareaObtenida?.responsable ?? "",
+    });
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
