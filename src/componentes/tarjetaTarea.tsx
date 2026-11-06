@@ -1,6 +1,6 @@
 import type {Tarea} from "../interfaces/Tarea.ts";
 import styled from "@emotion/styled";
-import {Link} from "react-router";
+import { useNavigate } from 'react-router';
 // ESTILOS
 const Tarjeta = styled.div`
     border: 1px solid #0072ff;
@@ -29,7 +29,7 @@ const BotonEliminar = styled.button`
     }
 `;
 
-    const Boton = styled(Link)`
+    const Boton = styled.button`
     background-color: #0072ff;
     color: white;
     padding: 6px 12px;
@@ -46,16 +46,16 @@ const BotonEliminar = styled.button`
 interface Props {
     tarea: Tarea;
     onEliminar: (id: string) => void;
-    onEditar: (id: string) => void;
 }
 
 function TarjetaTarea({tarea, onEliminar}: Props) {
+    const navigate = useNavigate();
     return (
         <Tarjeta>
             <h3>{tarea.titulo}</h3>
             {tarea.descripcion && <p>{tarea.descripcion}</p>}
             <p>{tarea.responsable}</p>
-            <Boton to={`/tareas/${tarea.id}/editar`}>
+            <Boton type="button" onClick={() => navigate(`/tareas/${tarea.id}/editar`)}>
                 Editar
             </Boton>
             <BotonEliminar type="button" onClick={() => onEliminar(tarea.id)}>
