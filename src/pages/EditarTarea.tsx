@@ -61,7 +61,7 @@ function EditarTarea() {
             navigate('/tareas');
 
         } catch {
-            setError("Error creando tarea");
+            setError("Error editando tarea");
         }
     };
     if (cargando) return <p>Cargando tarea...</p>;

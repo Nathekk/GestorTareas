@@ -38,7 +38,6 @@ function NuevaTarea() {
         } catch (error) {
             console.error("Error creando tarea", error);
             setError("No se pudo crear la tarea");
-            throw error
         }
     }
 

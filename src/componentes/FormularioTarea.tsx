@@ -61,7 +61,7 @@ function FormularioTarea({tareaObtenida, onGuardar, onCancelar}: Props) {
 
     return (
         <Formulario onSubmit={handleSubmit}>
-            {tareaObtenida ? "Editar tarea" : "Nueva tarea"}
+            <h2>{tareaObtenida ? "Editar tarea" : "Nueva tarea"}</h2>
 
             <label>
                 Título
