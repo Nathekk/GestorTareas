@@ -87,7 +87,6 @@ export default function ListaTareas() {
             } catch (error) {
                 console.error("Error al cargar las tareas", error);
                 setError("No se pudieron cargar las tareas");
-                throw error
             } finally {
                 setCargando(false)
             }
