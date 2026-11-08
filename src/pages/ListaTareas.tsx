@@ -3,6 +3,7 @@ import TarjetaTarea from "../componentes/tarjetaTarea.tsx";
 import FormularioTarea from "../componentes/FormularioTarea.tsx";
 import type {Tarea} from "../interfaces/Tarea.ts";
 import styled from "@emotion/styled";
+import {useNavigate} from "react-router";
 //EMOTIONNN
 const Cabecera = styled.header`
     display: flex;
@@ -50,6 +51,16 @@ const MensajeError = styled.p`
     color: red;
     font-size: 14px;
 `;
+
+const OpcionesEleccion = styled.div`
+    display: flex;
+    background-color: #0072ff;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    margin-top: 15px;
+    cursor: pointer;
+`;
 export default function ListaTareas() {
 
     const [tareas, setTareas] = useState<Tarea[]>([])
@@ -57,6 +68,8 @@ export default function ListaTareas() {
     const [modalAbierta, setModalAbierta] = useState(false)
     const [error, setError] = useState("");
     const [cargando, setCargando] = useState(true);
+    const [eligiendo, setEligiendo] = useState(false)
+    const navigate = useNavigate()
 
     //FETCH de los datos de la api
     useEffect(() => {
@@ -147,7 +160,7 @@ export default function ListaTareas() {
         <>
             <Cabecera>
                 <h1>Gestor de tareas</h1>
-                <button type="button" onClick={() => setModalAbierta(true)}>Nueva tarea</button>
+                <button type="button" onClick={() => setEligiendo(true)}>Nueva tarea</button>
             </Cabecera>
 
             <Buscador type="text" placeholder="Buscar por titulo" value={busqueda}
@@ -173,7 +186,6 @@ export default function ListaTareas() {
                     <TarjetaTarea key={t.id} tarea={t} onEliminar={eliminarTarea}/>))}
             </GridTareas>
 
-            {/*basicamente mira es true que si le estas clickando al fondo, si le clickas al fondo se cierra, si no es true esta abierta pq no le clickaste nada*/}
             {modalAbierta && (
                 <ModalFondo onClick={(e) => {
                     if (e.target === e.currentTarget) {
@@ -183,6 +195,22 @@ export default function ListaTareas() {
                 >
                     <Modal>
                         <FormularioTarea onGuardar={addTarea} onCancelar={() => setModalAbierta(false)}/>
+                    </Modal>
+                </ModalFondo>
+            )}
+            {eligiendo && (
+                <ModalFondo onClick={(e) => {
+                    if (e.target === e.currentTarget) setEligiendo(false);
+                }}>
+                    <Modal>
+                        <h2>¿De que forma quieres crearla?</h2>
+                        <OpcionesEleccion  onClick={() => { setEligiendo(false); setModalAbierta(true); }}>
+                            Ventana modal
+                        </OpcionesEleccion>
+                        <OpcionesEleccion onClick={() => navigate('/tareas/nueva')}>
+                            Página independiente
+                        </OpcionesEleccion>
+                        <OpcionesEleccion onClick={() => setEligiendo(false)}>Cancelar</OpcionesEleccion>
                     </Modal>
                 </ModalFondo>
             )}
