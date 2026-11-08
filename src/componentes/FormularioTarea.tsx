@@ -55,13 +55,13 @@ function FormularioTarea({tareaObtenida, onGuardar, onCancelar}: Props) {
         }
         setError("");
         await onGuardar(nuevaTarea.titulo.trim(), nuevaTarea.descripcion.trim(), nuevaTarea.responsable.trim());
-        setNuevaTarea({titulo: "", descripcion: "", responsable: ""});
+
+
     }
 
     return (
         <Formulario onSubmit={handleSubmit}>
-            {/*la interfaz modal del formulario*/}
-            <h2>Nueva tarea</h2>
+            {tareaObtenida ? "Editar tarea" : "Nueva tarea"}
 
             <label>
                 Título

@@ -13,7 +13,8 @@ const MensajeError = styled.p`
 function EditarTarea() {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [tarea, setTarea] = useState<Tarea>({id: "", titulo: "", descripcion: "", responsable: ""});
+    const [tarea, setTarea] = useState<Tarea | null>(null);
+    const [cargando, setCargando] = useState(true);
     const [error, setError] = useState("");
 
 
@@ -29,8 +30,11 @@ function EditarTarea() {
                 } else {
                     setError("No existe la tarea");
                 }
-            } catch (error) {
-                console.error("Error al cargar la tarea", error);
+            } catch {
+                setError("Error al cargar la tarea");
+            } finally {
+                setCargando(false)
+
             }
         }
 
@@ -51,14 +55,25 @@ function EditarTarea() {
                 body: JSON.stringify({titulo, descripcion, responsable}),
             });
 
-            if (response.ok) {
-                console.error("Todo perfeccto, actualizado");
-                navigate('/tareas');
+            if (!response.ok) {
+                throw new Error("Error al actualizar tarea")
             }
-        } catch (error) {
-            console.error("Error creando tarea", error);
+            navigate('/tareas');
+
+        } catch {
+            setError("Error creando tarea");
         }
     };
+    if (cargando) return <p>Cargando tarea...</p>;
+
+    if (!tarea) {
+        return (
+            <div>
+                <MensajeError>{error}</MensajeError>
+                <button type="button" onClick={() => navigate('/tareas')}>Volver</button>
+            </div>
+        );
+    }
 
     return (
         <div>
